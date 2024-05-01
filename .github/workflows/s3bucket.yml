@@ -1,36 +1,22 @@
-name: Build and Deploy
-
-on:
-  push:
-    branches:
-      - main 
-
+name: Push to AWS S3
+run-name: ${{ github.actor }} is running this GitHub Actions pipeline 
+on: [push]
 jobs:
-  build:
+  push-to-s3:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14  # Use Node.js version 14
-
-      - name: Install Dependencies
-        run: npm install  
-
-      - name: Build React App
-        run: npm run build  # Build the React app for production
-
-      - name: Deploy to S3 Bucket
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Run npm install
+        run: npm install
+      - name: Run npm build
+        run: npm run build
+      - name: List the directories
+        run: ls
+      - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --delete
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}  # Your S3 bucket name
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Your AWS region
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Your AWS access key ID
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Your AWS secret access key
-          SOURCE_DIR: 'build'  # The directory containing the built React app
+          SOURCE_DIR: build/
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
