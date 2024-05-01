@@ -14,7 +14,7 @@ jobs:
       - name: List the directories
         run: ls
       - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@main
+        uses: jakejarvis/s3-sync-action@master
         env:
           SOURCE_DIR: build/
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
