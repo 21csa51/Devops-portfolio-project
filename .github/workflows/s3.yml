@@ -2,7 +2,7 @@ name: Push to AWS S3
 on:
   push:
     branches:
-      - main # Change this to your main branch name if it's different
+      - master # Change this to your main branch name if it's different
 
 jobs:
   push-to-s3:
