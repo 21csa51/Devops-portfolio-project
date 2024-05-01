@@ -1,37 +1,22 @@
 name: Push to AWS S3
-on:
-  push:
-    branches:
-      - master # Change this to your main branch name if it's different
-
+run-name: ${{ github.actor }} is running this GitHub Actions pipeline 
+on: [push]
 jobs:
   push-to-s3:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14' # You can change the Node.js version as needed
-
-      - name: Install dependencies
+        uses: actions/checkout@v4
+      - name: Run npm install
         run: npm install
-
-      - name: Build the project
+      - name: Run npm build
         run: npm run build
-
       - name: List the directories
         run: ls
-
-      - name: Sync to S3
+      - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
-        with:
-             args: --follow-symlinks --delete
         env:
+          SOURCE_DIR: src/
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'ap-south-1' # Change this to your AWS region
-          SOURCE_DIR: src/ #
